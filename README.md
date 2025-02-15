@@ -43,7 +43,7 @@ Esta es una aplicación backend desarrollada en **Spring Boot** que permite prog
 1. **Clona el repositorio**:
 
    ```bash
-   git clone https://github.com/tu-usuario/tu-repositorio.git
+   git clone https://github.com/jpablo903/ApplicationMessageGenerator.git
    ```
 
 2. **Configura el archivo `application.properties`**:
