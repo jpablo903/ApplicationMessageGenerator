@@ -64,5 +64,4 @@ public class MessageController {
         messageService.deleteMessage(id);
         return "redirect:/messages";
     }
-    
 }
