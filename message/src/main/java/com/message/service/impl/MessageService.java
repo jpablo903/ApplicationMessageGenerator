@@ -2,33 +2,44 @@ package com.message.service.impl;
 
 import com.message.component.DiscordMessageScheduler;
 import com.message.entities.Message;
+import com.message.entities.MessageDTO;
 import com.message.repositories.MessageRepository;
 import com.message.service.IMessageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class MessageService implements IMessageService {
+@RequiredArgsConstructor
+public class MessageService implements IMessageService<MessageDTO, Long> {
 
     private final MessageRepository messageRepository;
     private final DiscordMessageScheduler discordMessageScheduler;
 
-    public MessageService(MessageRepository messageRepository, DiscordMessageScheduler discordMessageScheduler) {
-        this.messageRepository = messageRepository;
-        this.discordMessageScheduler = discordMessageScheduler;
+    @Override
+    public List<MessageDTO> getMessages() {
+        return messageRepository.findAll().stream()
+                .map(message -> new MessageDTO(
+                        message.getId(),
+                        message.getMessage_content(),
+                        message.getDate(),
+                        message.isSent()
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Message> getMessages() {
-        return messageRepository.findAll();
-    }
-
-    @Override
-    public Message saveMessage(Message message) {
-        message.setSent(false);
-        return messageRepository.save(message);
+    public MessageDTO saveMessage(MessageDTO messageDto) {
+        Message message = Message.builder()
+                .message_content(messageDto.message_content())
+                .date(messageDto.date())
+                .sent(false)
+                .build();
+        messageRepository.save(message);
+        return new MessageDTO(message.getId(), message.getMessage_content(), message.getDate(), message.isSent());
     }
 
     @Override
